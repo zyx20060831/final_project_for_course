@@ -109,7 +109,7 @@ for(int i=0;i<5;i++)
 cout<<"店面"<<endl;
 printf("Today is %d.",completed_game+1);
 cout<<"passtime customer1:"<<passtime_customer1<<"  customer2:"<<passtime_customer2<<endl;
-printf("You have %d seconds.",game_limit-pass_time);
+printf("You have %d seconds.",game_limit-pass_time>0?game_limit-pass_time:0);
 printf("You have %d gold coins.\n",game_gold);
 cout<<"Price:"<<endl<<"wrap:2(if you upgrade,3)"<<endl<<"chip:1"<<endl<<"cola:1"<<endl;
 cout<<"Stock: pancake="<<num_consumables[0]<<" meat="<<num_consumables[1]<<" cucumber="<<num_consumables[2]<<endl;
