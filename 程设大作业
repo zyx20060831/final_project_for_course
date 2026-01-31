@@ -1,0 +1,372 @@
+#include<bits/stdc++.h>
+using namespace std;
+int total_gold=0,completed_game=0;
+#define MAX 5
+
+enum UPGRADE{have,nothave};
+UPGRADE auto_meat_slice=nothave,gold_plate=nothave,enlarge_shop=nothave;
+void Playnewgame();void Upgrade();void Wrap();void Chip();void Cola();void Restock();void Preprocess();
+int main(){while(true){cout<<"主界面"<<endl;
+cout<<"A:play new game"<<endl;
+cout<<"B:upgrade the shop"<<endl;
+cout<<"how many gold:"<<total_gold<<endl;
+cout<<"how many games completed:"<<completed_game<<endl;
+cout<<"upgrading shop"<<endl;
+if(auto_meat_slice==have)
+ cout<<"meat slicer:ok"<<endl;
+else
+ cout<<"meat slicer:no"<<endl;
+if(gold_plate==have)
+ cout<<"gold plate:ok"<<endl;
+else
+ cout<<"gold plate:no"<<endl;
+if(enlarge_shop==have)
+ cout<<"shop enlarging:ok"<<endl;
+else
+ cout<<"shop enlarging:no"<<endl;
+cout<<"if you want to exit,please cin E"<<endl;
+cout<<"please enter your choice:"<<endl;
+char player_choice;
+cin>>player_choice;
+if(player_choice=='A')
+Playnewgame();
+else if(player_choice=='B')
+Upgrade();
+else if(player_choice=='E')
+return 0;
+else 
+cout<<"ERROR"<<endl;}}
+enum CONSUMABLES {pancake,meat,cucumber,sauce,chip,tomatosauce,cola,pancakepackage,chippackage,colacup};
+int num_consumables[10]{3,0,3,3,0,3,3,3,3,3};
+void Upgrade(){cout<<"升级"<<endl;
+
+cout<<"A:meat licer"<<endl;
+cout<<"B:gold plate"<<endl;
+cout<<"C:shop enlarging"<<endl;
+cout<<"if you selected it repeatedly,your gold will still be deducted"<<endl;
+cout<<"please enter your choice:"<<endl;
+char upgrade_choice;
+cin>>upgrade_choice;
+if(upgrade_choice=='A'&&auto_meat_slice==nothave)
+{if(total_gold>=2)
+    {auto_meat_slice=have;total_gold=total_gold-2;cout<<"you have meat slicer"<<endl;}
+else
+    {cout<<"fail to upgrage"<<endl;}
+}
+else if(upgrade_choice=='B'&gold_plate==nothave)
+{if(total_gold>=2)
+    {gold_plate=have;total_gold=total_gold-2;cout<<"you have gold plate"<<endl;}
+else
+    {cout<<"fail to upgrage"<<endl;}
+}
+else if(upgrade_choice=='C'&&enlarge_shop==nothave)
+{if(total_gold>=1)
+    {enlarge_shop=have;total_gold=total_gold-1;cout<<"you have shop enlarging"<<endl;}
+else
+    {cout<<"fail to upgrage"<<endl;}
+}
+else
+{cout<<"ERROR"<<endl;}
+}
+bool customer1[3],customer2[3];
+bool customer1_wrap[5],customer2_wrap[5];
+int game_gold=0;
+
+
+void Playnewgame(){
+srand(time(0));
+int game_limit=90,customer_limit=20;game_gold=0;
+time_t start_time=time(0),customer1_time=time(0),customer2_time=time(0);
+for(int i=0;i<3;i++)
+{customer1[i]=(rand()%2==0);customer2[i]=(rand()%3==0);}
+for(int i=0;i<5;i++)
+{customer1_wrap[i]=(rand()%2==0);customer2_wrap[i]=(rand()%3==0);}
+
+while(true)
+{
+time_t now_time=time(0);
+int pass_time=(int)difftime(now_time,start_time);
+if(pass_time>=game_limit)
+ break;
+else
+{time_t customer_time=time(0);
+int passtime_customer1=(int)difftime(customer_time,customer1_time);
+int passtime_customer2=(int)difftime(customer_time,customer2_time);
+if(passtime_customer1>=customer_limit)
+{cout<<"customer1 has left"<<endl;customer1_time=time(0);
+for(int i=0;i<3;i++)
+   {customer1[i]=(rand()%2==0);}
+for(int i=0;i<5;i++)
+   {customer1_wrap[i]=(rand()%2==0);}
+}
+if(passtime_customer2>=customer_limit&&enlarge_shop==have)
+{cout<<"customer2 has left"<<endl;customer2_time=time(0);
+for(int i=0;i<3;i++)
+   {customer2[i]=(rand()%2==0);}
+for(int i=0;i<5;i++)
+   {customer2_wrap[i]=(rand()%2==0);}
+}
+cout<<"店面"<<endl;
+printf("Today is %d.",completed_game+1);
+cout<<"passtime customer1:"<<passtime_customer1<<"  customer2:"<<passtime_customer2<<endl;
+printf("You have %d seconds.",game_limit-pass_time);
+printf("You have %d gold coins.\n",game_gold);
+cout<<"Price:"<<endl<<"wrap:2(if you upgrade,3)"<<endl<<"chip:1"<<endl<<"cola:1"<<endl;
+cout<<"Stock: pancake="<<num_consumables[0]<<" meat="<<num_consumables[1]<<" cucumber="<<num_consumables[2]<<endl;
+cout<<" sauce="<<num_consumables[3]<<" chip_raw="<<num_consumables[4]<<" tomatosauce="<<num_consumables[5]<<endl;
+cout<<" cola_raw="<<num_consumables[6]<<" wrap_package="<<num_consumables[7]<<" chip_package="<<num_consumables[8]<<endl;
+cout<<" cola_cup="<<num_consumables[9]<<" (MAX="<<MAX<<")"<<endl;
+
+cout<<"customer1 needs:";
+printf("%d wrap,%d chip,%d cola\n",(int)customer1[0],(int)customer1[1],(int)customer1[2]);
+if(customer1[0])
+printf("with %d meat,%d cucumber,%d sauce,%d chip,%d tomatosauce\n",(int)customer1_wrap[0],(int)customer1_wrap[1],(int)customer1_wrap[2],(int)customer1_wrap[3],(int)customer1_wrap[4]);
+if(enlarge_shop==have){cout<<"customer2 needs:";
+printf("%d wrap,%d chip,%d cola\n",(int)customer2[0],(int)customer2[1],(int)customer2[2]);
+if(customer2[0]&&enlarge_shop==have)
+printf("with %d meat,%d cucumber,%d sauce,%d chip,%d tomatosauce\n",(int)customer2_wrap[0],(int)customer2_wrap[1],(int)customer2_wrap[2],(int)customer2_wrap[3],(int)customer2_wrap[4]);}
+cout<<"please cin your choice"<<endl;
+cout<<"A:make the pancake"<<endl;
+cout<<"B:make the chip"<<endl;
+cout<<"C:make the cola"<<endl;
+cout<<"D:restock"<<endl;
+cout<<"E:preprocess"<<endl;
+char what_to_make;
+cin >> what_to_make;
+switch(what_to_make) 
+{case 'A': Wrap(); break;
+case 'B': Chip(); break;
+case 'C': Cola(); break;
+case 'D': Restock(); break;
+case 'E': Preprocess(); break;
+default: cout << "ERROR: invalid choice!" << endl;}
+bool ifcustomer1happy=true;
+for(int i=0;i<3;i++)
+   if(customer1[i])
+        ifcustomer1happy=false;
+bool ifcustomer2happy=true;
+for(int i=0;i<3;i++)
+   if(customer2[i])
+        ifcustomer2happy=false;
+if(ifcustomer1happy)
+{cout<<"customer1 is happy"<<endl;customer1_time=time(0);
+for(int i=0;i<3;i++)
+   {customer1[i]=(rand()%2==0);}
+for(int i=0;i<5;i++)
+   {customer1_wrap[i]=(rand()%2==0);}}
+if(ifcustomer2happy&&enlarge_shop==have)
+{cout<<"customer2 is happy"<<endl;customer2_time=time(0);
+for(int i=0;i<3;i++)
+   {customer2[i]=(rand()%2==0);}
+for(int i=0;i<5;i++)
+   {customer2_wrap[i]=(rand()%2==0);}}
+}}
+completed_game++;total_gold=game_gold+total_gold;
+}
+
+
+int chip_step=0;
+void Chip(){if(chip_step==0)
+{if(num_consumables[8]==0)
+{cout<<"no chip package"<<endl;return;}
+cout<<"tkaing the package"<<endl;
+chip_step=1;return;}
+if(chip_step==1){
+if(num_consumables[4]==0)
+{cout<<"no chip raw material"<<endl;return;}
+cout<<"chip is being made"<<endl;
+num_consumables[8]--;
+num_consumables[4]--;chip_step=0;}
+if(customer1[1])
+cout<<"customer1 needs it,you can cin A"<<endl;
+if(customer2[1]&&enlarge_shop==have)
+cout<<"customer2 needs it,you can cin B"<<endl;
+cout<<"you can also restore it,then you can cin C"<<endl;
+cout<<"don't cin what you don't see"<<endl;
+char chipchoice;
+cin>>chipchoice;
+if(chipchoice=='A')
+{customer1[1]=false;game_gold=game_gold+1;}
+else if(chipchoice=='B')
+{customer2[1]=false;game_gold=game_gold+1;}
+else if(chipchoice=='C'&&num_consumables[4]<MAX)
+num_consumables[4]++;
+else
+cout<<"ERROR"<<endl;}
+int cola_step=0;
+void Cola(){if(cola_step==0)
+{if(num_consumables[9]==0)
+{cout<<"no colacup"<<endl;return;}
+cout<<"taking the cup"<<endl;
+cola_step=1;return;}
+if(cola_step==1){if(num_consumables[6]==0)
+{cout<<"no cola raw material"<<endl;return;}
+cout<<"cola is being made"<<endl;
+num_consumables[6]--;
+num_consumables[9]--;cola_step=0;}
+if(customer1[2])
+cout<<"customer1 needs it,you can cin A"<<endl;
+if(customer2[2]&&enlarge_shop==have)
+cout<<"customer2 needs it,you can cin B"<<endl;
+cout<<"don't cin what you don't see"<<endl;
+char colachoice;
+cin>>colachoice;
+if(colachoice=='A')
+{customer1[2]=false;game_gold=game_gold+1;}
+else if(colachoice=='B')
+{customer2[2]=false;game_gold=game_gold+1;}
+else
+cout<<"ERROR"<<endl;
+}
+
+
+
+int wrap_step = 0;               
+int op_pancake = 0;              
+int op_packaged_wrap = 0;        
+const int MAX_PANCAKE_ON_OP = 1; 
+const int MAX_PACKED_WRAP = 3;   
+
+void Wrap(){
+if(wrap_step == 0){
+   if(op_pancake >= MAX_PANCAKE_ON_OP){
+      cout<<"ERROR: op pancake full (max="<<MAX_PANCAKE_ON_OP<<")! can't place new pancake"<<endl;
+      return;}
+   if(num_consumables[0]==0){
+      cout<<"no pancake! can't place pancake"<<endl;
+      return;}
+cout<<"step1: place pancake success (op pancake count="<<op_pancake+1<<")"<<endl;
+num_consumables[0]--;
+op_pancake++;
+wrap_step=1;
+cout<<"next step: add ingredients (reselect 'A' to continue)"<<endl;
+return;}
+if(wrap_step==1){
+   if(customer1[0] && customer1_wrap[0]){
+      if(num_consumables[1]==0 && auto_meat_slice==have){
+         cout<<"auto meat slicer works! meat stock full (MAX="<<MAX<<")"<<endl;
+      num_consumables[1] = MAX;}
+      if(num_consumables[1]==0){
+         cout<<"no meat! can't add ingredients"<<endl;
+         return;}}
+        bool ingredient_ok = true;
+        if(customer1[0]){
+            if(customer1_wrap[1] && num_consumables[2]==0){
+                cout<<"no cucumber! can't add ingredients"<<endl;
+                ingredient_ok=false;}
+            if(customer1_wrap[2] && num_consumables[3]==0){
+                cout<<"no sauce! can't add ingredients"<<endl;
+                ingredient_ok=false;}
+            if(customer1_wrap[3] && num_consumables[4]==0){
+                cout<<"no chip! can't add ingredients"<<endl;
+                ingredient_ok=false;}
+            if(customer1_wrap[4] && num_consumables[5]==0){
+                cout<<"no tomatosauce! can't add ingredients"<<endl;
+                ingredient_ok=false;}}
+        if(!ingredient_ok)
+            return;
+        cout<<"step2: add ingredients (meat/cucumber/sauce/chip/tomatosauce) success"<<endl;
+        if(customer1[0]){
+            if(customer1_wrap[0])
+                num_consumables[1]--;
+            if(customer1_wrap[1])
+                num_consumables[2]--;
+            if(customer1_wrap[2])
+                num_consumables[3]--;
+            if(customer1_wrap[3])
+                num_consumables[4]--;
+            if(customer1_wrap[4])
+                num_consumables[5]--;
+        }
+        wrap_step = 2;
+        cout<<"next step: roll pancake (reselect 'A' to continue)"<<endl;
+        return;}
+
+    
+    if(wrap_step == 2){
+        cout<<"step3: roll pancake success"<<endl;
+        wrap_step = 3;
+        cout<<"next step: package wrap (reselect 'A' to continue)"<<endl;
+        return;}
+   if(wrap_step == 3){
+      if(op_packaged_wrap >= MAX_PACKED_WRAP){
+         cout<<"ERROR: op packaged wrap full (max="<<MAX_PACKED_WRAP<<")! can't package new wrap"<<endl;
+          return;}
+        if(num_consumables[7]==0){
+         cout<<"no pancake package! can't package wrap"<<endl;
+         return;}
+        cout<<"step4: package wrap success (op packaged count="<<op_packaged_wrap+1<<")"<<endl;
+        num_consumables[7]--;
+        op_packaged_wrap++;
+        op_pancake--;
+        wrap_step = 4;
+
+        
+        cout<<"wrap make complete! op status: pancake="<<op_pancake<<", packaged wrap="<<op_packaged_wrap<<endl;
+        if(customer1[0])
+            cout<<"customer1 needs it,you can cin A"<<endl;
+        if(customer2[0] && enlarge_shop==have)
+            cout<<"customer2 needs it,you can cin B"<<endl;
+        char wrap_choice;
+        cin>>wrap_choice;
+        int wrap_price = (gold_plate==have) ? 3 : 2;
+        if(wrap_choice=='A' && customer1[0]){
+         customer1[0] = false;
+         game_gold += wrap_price;
+         op_packaged_wrap--;
+         cout<<"deliver to customer1! op packaged wrap="<<op_packaged_wrap<<endl;}
+        else if(wrap_choice=='B' && customer2[0] && enlarge_shop==have)
+        {customer2[0] = false;
+         game_gold += wrap_price;
+         op_packaged_wrap--;
+         cout<<"deliver to customer2! op packaged wrap="<<op_packaged_wrap<<endl;}
+        else{
+         cout<<"ERROR: deliver fail! packaged wrap still on op ("<<op_packaged_wrap<<")"<<endl;}
+        wrap_step = 0;
+        return;
+    }
+    cout<<"ERROR: wrap make order error! current step="<<wrap_step<<endl;
+    cout<<"correct order: place pancake → add ingredients → roll → package"<<endl;
+    if(op_pancake > 0)
+        op_pancake--;
+    wrap_step = 0;}
+
+
+
+void Restock(){
+    cout<<"Choose what to restock (A-J):"<<endl;
+    cout<<"A:pancake(0) B:meat(1) C:cucumber(2) D:sauce(3) E:chip(4)"<<endl;
+    cout<<"F:tomatosauce(5) G:cola(6) H:pancakepackage(7) I:chippackage(8) J:colacup(9)"<<endl;
+    char r_choice;
+    cin>>r_choice;
+    switch(r_choice){
+        case 'A': num_consumables[0] = MAX; break;
+        case 'B': num_consumables[1] = MAX; break;
+        case 'C': num_consumables[2] = MAX; break;
+        case 'D': num_consumables[3] = MAX; break;
+        case 'E': num_consumables[4] = MAX; break;
+        case 'F': num_consumables[5] = MAX; break;
+        case 'G': num_consumables[6] = MAX; break;
+        case 'H': num_consumables[7] = MAX; break;
+        case 'I': num_consumables[8] = MAX; break;
+        case 'J': num_consumables[9] = MAX; break;
+        default: cout<<"ERROR"<<endl; return;
+    }
+    cout<<"restock success! stock not exceed MAX("<<MAX<<")"<<endl;
+}
+
+
+
+void Preprocess(){
+    cout<<"A:cut meat(1) B:fry chip(4)"<<endl;
+    cout<<"please enter choice:"<<endl;
+    char p_choice;
+    cin>>p_choice;
+    if(p_choice=='A')
+    {num_consumables[1] = MAX;
+   cout<<"meat cut success! stock="<<MAX<<endl;}
+    else if(p_choice=='B')
+    {num_consumables[4] = MAX;
+   cout<<"chip fry success! stock="<<MAX<<endl;}
+    else cout<<"ERROR"<<endl;
+}
